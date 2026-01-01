@@ -19,7 +19,10 @@ function App() {
           dispatch(logOut())
         }
       })
-      .catch((err) = console.log("Error during login ", err))
+      .catch((err) => {
+        dispatch(logOut())
+        console.log("Error during login ", err)
+      })
       .finally(() => setLoading(false))
   }, [])
 
