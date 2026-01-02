@@ -87,4 +87,4 @@ function Signup() {
 
 }
 
-export default Singup
+export default Signup
