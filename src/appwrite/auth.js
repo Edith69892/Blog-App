@@ -34,7 +34,7 @@ export class AuthService {
 
   async login({ email, password }) {
     try {
-      return await this.account.createEmailSession(email, password);
+      return await this.account.createEmailPasswordSession(email, password);
     } catch (error) {
       throw error;
     }
@@ -44,10 +44,17 @@ export class AuthService {
     try {
       return await this.account.get();
     } catch (error) {
-      console.log("Appwrite service :: getCurrentUser Error : ", error);
-      throw error;
+      if (error.code === 401) {
+        // expected when user is not logged in
+        return null;
+      }
+      console.error("Unexpected Appwrite error:", error);
+      return null;
     }
   }
+
+
+
 
   async logOut() {
     try {

@@ -7,7 +7,7 @@ function LogoutBtn() {
     const logOutHandler = () => {
         authService.logOut()
             .then(() => {
-                dispatch(logOut)
+                dispatch(logOut())
             })
             .catch((error) => {
                 console.log("Logoutbbtn error : ", error)
@@ -15,7 +15,10 @@ function LogoutBtn() {
             })
     }
     return (
-        <div>Logout Btn</div>
+        <button
+    className='inline-bock px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'
+    onClick={logOutHandler}
+    >Logout</button>
     )
 }
 

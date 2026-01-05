@@ -2,7 +2,8 @@ import React, { useCallback, useEffect } from 'react'
 import { useForm } from "react-hook-form"
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import appwriteService from "../appwrite/appwriteConfig"
+import appwriteService from "../../appwrite/appwriteConfig"
+import {Input,RTE,Select,Button} from '../index'
 
 
 function PostForm({ post }) {
@@ -17,19 +18,21 @@ function PostForm({ post }) {
     })
     const userData = useSelector(state => state.auth.userData);
 
-    const submit = async (data) => {
+    const submit = async (data) => {  
         if (post) {
+            console.log("updare")
             const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null
 
             if (file) {
-                appwriteService.deleteFile(post.featuredImage)
+                appwriteService.deleteFile(post.featuredImg)
             }
 
             const dbPost = await appwriteService.updatePost(post.$id, {
                 ...data,
-                featuredImage: file ? file.$id : undefined
+                featuredImg: file ? file.$id : undefined,
+                userId : userData.$id
             })
-
+            
             if (dbPost) {
                 navigate(`/post/${dbPost.$id}`);
             }
@@ -38,10 +41,11 @@ function PostForm({ post }) {
             const file = await appwriteService.uploadFile(data.image[0])
             if (file) {
                 const fileId = file.$id
-                data.featuredImage = fileId;
+                data.featuredImg = fileId;
                 const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id })
 
                 if (dbPost) {
+                    
                     navigate(`/post/${dbPost.$id}`)
                 }
             }
@@ -71,7 +75,7 @@ function PostForm({ post }) {
     }, [watch, slugTransform, setValue])
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
+        <form onSubmit={handleSubmit(submit)}  className="flex flex-wrap">
             <div className="w-2/3 px-2">
                 <Input
                     label="Title :"
@@ -113,7 +117,10 @@ function PostForm({ post }) {
                     className="mb-4"
                     {...register("status", { required: true })}
                 />
-                <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
+                <Button type="submit" 
+                        bgColor={post ? "bg-green-500" : undefined}
+                        className="w-full"
+                    >
                     {post ? "Update" : "Submit"}
                 </Button>
             </div>

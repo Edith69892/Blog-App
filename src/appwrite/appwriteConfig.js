@@ -15,7 +15,7 @@ export class Service {
         this.bucket = new Storage(this.client)
     }
 
-    async createPost({ title, slug, content, featuredImage, status, userId }) {
+    async createPost({ title, slug, content, featuredImg, status, userId }) {
         try {
             return await this.databases.createDocument(
                 config.appwriteDatabaseId,
@@ -24,7 +24,7 @@ export class Service {
                 {
                     title,
                     content,
-                    featuredImage,
+                    featuredImg,
                     status,
                     userId
                 }
@@ -35,7 +35,7 @@ export class Service {
         }
     }
 
-    async updatePost(slug, { title, content, featuredImage, status }) {
+    async updatePost(slug, { title, content, featuredImg, status , userId}) {
         try {
             return await this.databases.updateDocument(
                 config.appwriteDatabaseId,
@@ -44,8 +44,9 @@ export class Service {
                 {
                     title,
                     content,
-                    featuredImage,
-                    status
+                    featuredImg,
+                    status,
+                    userId
                 }
             )
         } catch (error) {
@@ -70,12 +71,15 @@ export class Service {
         }
     }
 
-    async getPost(slug) {
+    async getPost(documentId) {
         try {
             return await this.databases.getDocument(
-                config.appwriteDatabaseId,
-                config.appwriteCollectionId,
-                slug
+                {
+                   databaseId: config.appwriteDatabaseId,
+                 collectionId: config.appwriteCollectionId,
+                 documentId : documentId
+            }
+                
             )
 
         } catch (error) {
@@ -129,9 +133,9 @@ export class Service {
         }
     }
 
-    async getFIlePreview(fileId){
+     getFilePreview(fileId){
         try {
-            return  await  this.bucket.getFilePreview(
+            return  this.bucket.getFileView(
                 config.appwriteBucketId,
                 fileId
             )
